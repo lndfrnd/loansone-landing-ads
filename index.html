@@ -4,54 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LoansOne – Fast Business Finance Eligibility Check</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-  <!-- Inter font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- DNS Prefetch and Preconnect for third-party domains -->
+  <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="//apply.loansone.com.au">
+  <link rel="dns-prefetch" href="//images.unsplash.com">
+  <link rel="dns-prefetch" href="//loansone.com.au">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+  
+  <!-- Preload logo images -->
+  <link rel="preload" href="https://loansone.com.au/wp-content/uploads/2019/04/loans-one-logo.png" as="image">
+  
+  <!-- Preload hero background image -->
+  <link rel="preload" href="https://images.unsplash.com/photo-1528459105426-b3f76dd65654?auto=format&fit=crop&w=1500&q=60" as="image">
+  
+  <!-- Critical CSS inlined -->
   <style>
-    html {scroll-behavior:smooth;}
-    body {font-family:'Inter',sans-serif;}
-    .hero-bg{background:radial-gradient(circle at 50% 0%,#e8f5f4 0%,#d2e8e7 45%,#bddadc 100%);}  
-    .btn{transition:transform .15s ease,box-shadow .15s ease;}  
-    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,.12);}  
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;color:rgb(31 41 55);}
+    .hero-bg{background:radial-gradient(circle at 50% 0%,#e8f5f4 0%,#d2e8e7 45%,#bddadc 100%);}
+    .btn{transition:transform .15s ease,box-shadow .15s ease;}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,.12);}
+    
+    /* Critical above-the-fold styles */
+    .header{width:100%;box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);background-color:rgb(255 255 255 / 0.8);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+    .header-container{max-width:72rem;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;}
+    .logo-container{display:flex;align-items:center;gap:0.75rem;}
+    .logo{width:8rem;height:auto;object-fit:contain;}
+    .nav{display:none;gap:2rem;font-size:0.875rem;font-weight:500;}
+    .nav-link{color:inherit;}
+    .nav-link:hover{color:rgb(5 150 105);}
+    .cta-btn{background-color:rgb(5 150 105);color:white;border-radius:9999px;padding:0.5rem 1.25rem;font-size:0.875rem;font-weight:600;box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);}
+    
+    .hero{background:radial-gradient(circle at 50% 0%,#e8f5f4 0%,#d2e8e7 45%,#bddadc 100%);}
+    .hero-content{max-width:64rem;margin:0 auto;text-align:center;padding:4rem 1.5rem 7rem;}
+    .hero-title{font-size:1.875rem;font-weight:800;line-height:1.25;max-width:48rem;margin:0 auto 1.5rem;color:rgb(31 41 55);}
+    .hero-subtitle{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;font-size:0.875rem;color:rgb(75 85 99);margin-bottom:3rem;}
+    .hero-point{display:flex;align-items:center;gap:0.25rem;}
+    .quiz-container{margin:0 auto;background-color:white;box-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);border-radius:0.5rem;overflow:hidden;max-width:32rem;}
+    
+    @media (min-width: 640px) {
+      .hero-title{font-size:2.25rem;}
+    }
+    @media (min-width: 768px) {
+      .header-container{padding:1rem 0;}
+      .nav{display:flex;}
+      .hero-title{font-size:3rem;}
+    }
+    
+    /* Prevent layout shift for images */
+    img{display:block;}
+    .modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background-color:rgb(0 0 0 / 0.5);}
+    .hidden{display:none !important;}
   </style>
+  
+  <!-- Load Tailwind CSS non-blocking -->
+  <link rel="preload" href="https://cdn.tailwindcss.com?plugins=forms,typography" as="script" onload="var script=document.createElement('script');script.src=this.href;document.head.appendChild(script)">
+  <noscript><script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script></noscript>
+  
+  <!-- Load Alpine.js with module preload -->
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="text-gray-800">
+<body>
   <!-- ===== HEADER ===== -->
-  <header class="w-full shadow-sm bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto flex items-center justify-between py-4 px-6 lg:px-0">
-      <a href="#" class="flex items-center space-x-3" aria-label="LoansOne home">
-        <img src="https://loansone.com.au/wp-content/uploads/2019/04/loans-one-logo.png" alt="LoansOne logo" class="w-32 h-auto object-contain" loading="lazy">
+  <header class="header">
+    <div class="header-container">
+      <a href="#" class="logo-container" aria-label="LoansOne home">
+        <img src="https://loansone.com.au/wp-content/uploads/2019/04/loans-one-logo.png" alt="LoansOne logo" class="logo" width="128" height="32" loading="eager">
       </a>
-      <nav class="hidden md:flex space-x-8 text-sm font-medium">
-        <a href="#how" class="hover:text-emerald-600">How it works</a>
-        <a href="#eligibility" class="hover:text-emerald-600">Eligibility Requirements</a>
-        <a href="#why" class="hover:text-emerald-600">Why Us</a>
-        <a href="#faq" class="hover:text-emerald-600">FAQ</a>
+      <nav class="nav">
+        <a href="#how" class="nav-link">How it works</a>
+        <a href="#eligibility" class="nav-link">Eligibility Requirements</a>
+        <a href="#why" class="nav-link">Why Us</a>
+        <a href="#faq" class="nav-link">FAQ</a>
       </nav>
-      <a href="#quiz" class="btn bg-emerald-600 text-white rounded-full px-5 py-2 text-sm font-semibold shadow">Get Started</a>
+      <a href="#quiz" class="btn cta-btn">Get Started</a>
     </div>
   </header>
 
   <!-- ===== HERO ===== -->
-  <section class="hero-bg">
-    <div class="max-w-5xl mx-auto text-center px-6 pt-16 pb-28">
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight max-w-3xl mx-auto mb-6">Need Funding Fast? Check Your Business <span class="text-emerald-600">Finance Eligibility</span> Now</h1>
-      <ul class="flex flex-wrap justify-center gap-4 text-sm text-gray-600 mb-12">
-        <li class="flex items-center gap-1"><span class="text-emerald-600 font-bold">•</span> Fast business loan approvals</li>
-        <li class="flex items-center gap-1"><span class="text-emerald-600 font-bold">•</span> No impact on your credit score</li>
-        <li class="flex items-center gap-1"><span class="text-emerald-600 font-bold">•</span> Funding options up to $500K</li>
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Need Funding Fast? Check Your Business <span style="color:rgb(5 150 105)">Finance Eligibility</span> Now</h1>
+      <ul class="hero-subtitle">
+        <li class="hero-point"><span style="color:rgb(5 150 105);font-weight:700">•</span> Fast business loan approvals</li>
+        <li class="hero-point"><span style="color:rgb(5 150 105);font-weight:700">•</span> No impact on your credit score</li>
+        <li class="hero-point"><span style="color:rgb(5 150 105);font-weight:700">•</span> Funding options up to $500K</li>
       </ul>
       <!-- Quiz Form (always visible in hero) -->
-      <div id="quiz" class="mx-auto bg-white shadow-xl rounded-lg overflow-hidden max-w-lg">
-        <iframe src="https://apply.loansone.com.au/?color=green&brand=LoansOne" title="LoansOne Application" style="width:100%;height:600px;border:none;" loading="lazy"></iframe>
+      <div id="quiz" class="quiz-container">
+        <iframe src="https://apply.loansone.com.au/?color=green&brand=LoansOne" title="LoansOne Application" width="100%" height="600" style="border:none;" loading="lazy"></iframe>
       </div>
       <!-- Modal Quiz -->
-      <div id="quiz-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+      <div id="quiz-modal" class="modal hidden">
         <div class="relative bg-white shadow-xl rounded-lg overflow-hidden max-w-lg w-full mx-4">
           <button id="close-quiz" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl font-bold">&times;</button>
-          <iframe src="https://apply.loansone.com.au/?color=green&brand=LoansOne" title="LoansOne Application" style="width:100%;height:600px;border:none;" loading="lazy"></iframe>
+          <iframe src="https://apply.loansone.com.au/?color=green&brand=LoansOne" title="LoansOne Application" width="100%" height="600" style="border:none;" loading="lazy"></iframe>
         </div>
       </div>
       <!-- Exit Intent Popup -->
@@ -63,58 +121,78 @@
           <button id="exit-cta" class="btn bg-emerald-600 text-white px-8 py-3 rounded-full font-semibold">Check Eligibility Now</button>
         </div>
       </div>
-      <script>
-        // Show modal on any link or button to #quiz
-        document.addEventListener('DOMContentLoaded', function() {
-          function showQuizModal(e) {
-            e.preventDefault();
-            document.getElementById('quiz-modal').classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-          }
-          function hideQuizModal() {
-            document.getElementById('quiz-modal').classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-          }
-          document.querySelectorAll('a[href="#quiz"], button[href="#quiz"]').forEach(function(el) {
-            el.addEventListener('click', showQuizModal);
-          });
-          document.getElementById('close-quiz').addEventListener('click', hideQuizModal);
-          document.getElementById('quiz-modal').addEventListener('click', function(e) {
-            if (e.target === this) hideQuizModal();
-          });
-
-          // Exit intent popup
-          let exitPopupShown = false;
-          function showExitPopup() {
-            if (!exitPopupShown) {
-              document.getElementById('exit-popup').classList.remove('hidden');
-              document.body.classList.add('overflow-hidden');
-              exitPopupShown = true;
-            }
-          }
-          function hideExitPopup() {
-            document.getElementById('exit-popup').classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-          }
-          document.getElementById('close-exit').addEventListener('click', hideExitPopup);
-          document.getElementById('exit-popup').addEventListener('click', function(e) {
-            if (e.target === this) hideExitPopup();
-          });
-          document.addEventListener('mouseout', function(e) {
-            if (e.clientY < 10) {
-              showExitPopup();
-            }
-          });
-          
-          // Exit CTA button - close popup and scroll to form
-          document.getElementById('exit-cta').addEventListener('click', function() {
-            hideExitPopup();
-            document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
-          });
-        });
-      </script>
     </div>
   </section>
+
+  <!-- Load remaining Tailwind classes after critical content -->
+  <script>
+    // Load Tailwind CSS if not already loaded
+    if (!document.querySelector('script[src*="tailwindcss"]')) {
+      var script = document.createElement('script');
+      script.src = 'https://cdn.tailwindcss.com?plugins=forms,typography';
+      document.head.appendChild(script);
+    }
+    
+    // Optimize modal and exit intent functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const quizModal = document.getElementById('quiz-modal');
+      const exitPopup = document.getElementById('exit-popup');
+      
+      function showQuizModal(e) {
+        e.preventDefault();
+        quizModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function hideQuizModal() {
+        quizModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      
+      // Use event delegation for better performance
+      document.addEventListener('click', function(e) {
+        if (e.target.matches('a[href="#quiz"], button[href="#quiz"]')) {
+          showQuizModal(e);
+        }
+        if (e.target.id === 'close-quiz' || (e.target === quizModal)) {
+          hideQuizModal();
+        }
+      });
+
+      // Exit intent popup with debouncing
+      let exitPopupShown = false;
+      let exitTimeout;
+      
+      function showExitPopup() {
+        if (!exitPopupShown) {
+          exitPopup.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          exitPopupShown = true;
+        }
+      }
+      
+      function hideExitPopup() {
+        exitPopup.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      
+      document.addEventListener('mouseout', function(e) {
+        if (e.clientY < 10 && !exitTimeout) {
+          exitTimeout = setTimeout(showExitPopup, 100);
+        }
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (e.target.id === 'close-exit' || e.target === exitPopup) {
+          hideExitPopup();
+        }
+        if (e.target.id === 'exit-cta') {
+          hideExitPopup();
+          document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
 
   <!-- ===== HOW IT WORKS ===== -->
   <section id="how" class="max-w-6xl mx-auto px-6 py-20">
@@ -139,7 +217,7 @@
   </section>
 
   <!-- ===== CTA BANNER ===== -->
-  <section class="relative bg-fixed bg-center bg-cover" style="background-image:url('https://images.unsplash.com/photo-1528459105426-b3f76dd65654?auto=format&fit=crop&w=1500&q=60');">
+  <section class="relative bg-fixed bg-center bg-cover" style="background-image:url('https://images.unsplash.com/photo-1528459105426-b3f76dd65654?auto=format&fit=crop&w=1500&q=60');" loading="lazy">
     <div class="absolute inset-0 bg-black/60"></div>
     <div class="relative max-w-4xl mx-auto px-6 py-24 text-center text-white space-y-6">
       <h2 class="text-3xl md:text-4xl font-extrabold">Get Started Now</h2>
@@ -158,10 +236,10 @@
       <div class="grid grid-cols-2 gap-6">
         <template x-for="feature in [
           {title:'Fast',desc:'On average it takes less than a couple of minutes to check your eligibility'},
-          {title:'Simple',desc:'We’ve made it as easy as it can be to find out if you qualify'},
+          {title:'Simple',desc:'We've made it as easy as it can be to find out if you qualify'},
           {title:'Secure',desc:'Our website uses the latest SSL technologies to protect your data'},
           {title:'No Risk',desc:'NO costs to use and zero obligations. Our partners fund the free service'},
-          {title:'Flexible',desc:'Our application helps you find eligible options even if you don’t have perfect credit or previous financing history'},
+          {title:'Flexible',desc:'Our application helps you find eligible options even if you don't have perfect credit or previous financing history'},
           {title:'Helps You',desc:'This service is designed to help you find out if you qualify for financing and provides you with eligible options'}
         ]" :key="feature.title">
           <div class="p-6 rounded-xl shadow bg-white" x-data="{}">
@@ -216,7 +294,7 @@
     <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 px-6 py-16">
       <div class="space-y-4">
         <a href="#" class="flex items-center space-x-2 text-black">
-          <img src="https://loansone.com.au/wp-content/uploads/2019/04/loans-one-logo.png" alt="LoansOne logo" class="w-24 h-auto object-contain">
+          <img src="https://loansone.com.au/wp-content/uploads/2019/04/loans-one-logo.png" alt="LoansOne logo" class="w-24 h-auto object-contain" width="96" height="24" loading="lazy">
           <span class="sr-only">LoansOne</span>
         </a>
         <p>LoansOne offers a secure, no‑obligation service to get connected with a business loan specialist.</p>
@@ -227,3 +305,15 @@
           <li><a href="#quiz" class="hover:text-black">Get Started</a></li>
           <li><a href="#how" class="hover:text-black">How it works</a></li>
           <li><a href="#eligibility" class="hover:text-black">Eligibility Requirements</a></li>
+          <li><a href="#why" class="hover:text-black">Why Us</a></li>
+          <li><a href="#faq" class="hover:text-black">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-black font-semibold mb-3">Contact</h3>
+        <p class="text-gray-600">Connect with our business loan specialists today</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
