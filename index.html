@@ -240,16 +240,16 @@
             <img src="/assets/images/excelent.svg" alt="Excellent Rating" class="h-8 w-auto" loading="lazy">
           </div>
         <div id="quiz" class="quiz-container">
-          <iframe src="https://multi.fullyapprovedfinance.com/" title="Full Approved Finance Application"
-            width="100%" height="800" style="border:none;" loading="lazy"></iframe>
+          <iframe id="main-quiz-iframe" title="Full Approved Finance Application"
+            width="100%" height="400" style="border:none;" loading="lazy"></iframe>
         </div>
               <!-- Modal Quiz -->
         <div id="quiz-modal" class="modal hidden">
           <div class="relative bg-white shadow-xl rounded-lg overflow-hidden max-w-lg w-full mx-4">
             <button id="close-quiz"
               class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl font-bold">&times;</button>
-            <iframe src="https://multi.fullyapprovedfinance.com/" title="Full Approved Finance Application"
-              width="100%" height="800" style="border:none;" loading="lazy"></iframe>
+            <iframe id="modal-quiz-iframe" title="Full Approved Finance Application"
+              width="100%" height="400" style="border:none;" loading="lazy"></iframe>
           </div>
         </div>
       <!-- Exit Intent Popup -->
@@ -270,6 +270,16 @@
   <script>
     // Optimize modal and exit intent functionality
     document.addEventListener('DOMContentLoaded', function () {
+      // Set quiz iframe src based on environment
+      var localHosts = ['localhost', '127.0.0.1', 'loansone-landing-ads.local'];
+      var quizSrc = (localHosts.includes(window.location.hostname))
+        ? 'http://localhost:3000/'
+        : 'https://multi.fullyapprovedfinance.com/';
+      var mainQuizIframe = document.getElementById('main-quiz-iframe');
+      var modalQuizIframe = document.getElementById('modal-quiz-iframe');
+      if (mainQuizIframe) mainQuizIframe.src = quizSrc;
+      if (modalQuizIframe) modalQuizIframe.src = quizSrc;
+
       const quizModal = document.getElementById('quiz-modal');
       const exitPopup = document.getElementById('exit-popup');
 
@@ -324,6 +334,21 @@
         if (e.target.id === 'exit-cta') {
           hideExitPopup();
           document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+
+      // Listen for messages from iframe to auto-adjust height
+      window.addEventListener('message', function(event) {
+        // Accept messages only from allowed origins
+        var allowedOrigins = ['http://localhost:3000', 'https://multi.fullyapprovedfinance.com', 'http://loansone-landing-ads.local'];
+        if (!allowedOrigins.includes(event.origin)) return;
+        if (event.data && event.data.type === 'setHeight' && typeof event.data.height === 'number') {
+          if (mainQuizIframe && event.source === mainQuizIframe.contentWindow) {
+            mainQuizIframe.style.height = event.data.height + 'px';
+          }
+          if (modalQuizIframe && event.source === modalQuizIframe.contentWindow) {
+            modalQuizIframe.style.height = event.data.height + 'px';
+          }
         }
       });
     });
