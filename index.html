@@ -521,18 +521,23 @@
   }
 
   /* ========== 3. hook the form ========== */
-  const leadForm = document.querySelector('form');
-  if (leadForm){
-    leadForm.addEventListener('submit', async e=>{
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // build payload -----------------------------------------------------------
-      const form       = e.target;
-      const data       = Object.fromEntries(new FormData(form)); // all existing fields
-      data._fbc        = getCookie('_fbc');
-      data._fbp        = getCookie('_fbp');
-      data.external_id = localStorage.getItem('fa_extid');
-      data.event_id    = `lead-${uuid()}`;                        // shared Pixel+CAPI
+          // 1. Grab DOM fields FIRST
+    const data = Object.fromEntries(new FormData(form));
+
+    // 2. Attach attribution IDs
+    const fbc = getCookie('_fbc');
+    const fbp = getCookie('_fbp');
+    data._fbc        = fbc || "";
+    data._fbp        = fbp || "";
+    data.external_id = localStorage.getItem('fa_extid') || "";
+    data.event_id    = `lead-${crypto.randomUUID()}`;
       /* optional Facebook Login ID */
       if (window.FB){
         FB.getLoginStatus(res=>{
@@ -545,16 +550,17 @@
         send(data);
       }
 
-      async function send(payload){
-        await fetch('https://<your-worker>.workers.dev', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
-        form.reset();
-      }
-    });
-  }
+      const send = async () => {
+      console.log('payload →', data);
+      await fetch('https://<your-worker>.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      form.reset();
+    };
+  }, { once: true });
+});
   </script>
 
 </body>
