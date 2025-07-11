@@ -256,7 +256,7 @@
             'https://multi.fullyapprovedfinance.com/' +
             (fromAd.toString() ? '?' + fromAd.toString() + '&' + extras.toString()
                                : '?' + extras.toString());
-          document.write(`<iframe id="main-quiz-iframe" src="${src}" style="width:100%;border:0;" height="450"></iframe>`);
+          document.write(`<iframe id="main-quiz-iframe" src="${src}" style="width:100%;border:0;" height="510"></iframe>`);
           </script>
         </div>
               <!-- Modal Quiz -->
@@ -287,6 +287,7 @@
     // Optimize modal and exit intent functionality
     document.addEventListener('DOMContentLoaded', function () {
       // main iframe now injected with cookie-aware script; modal retains static src
+      var mainQuizIframe  = document.getElementById('main-quiz-iframe');
       var modalQuizIframe = document.getElementById('modal-quiz-iframe');
       if (modalQuizIframe && !modalQuizIframe.src){
         modalQuizIframe.src = 'https://multi.fullyapprovedfinance.com/';
