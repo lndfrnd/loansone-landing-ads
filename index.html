@@ -491,6 +491,72 @@
       </div>
     </div>
   </footer>
+  <!-- Meta lead enrichment script -->
+  <script>
+  /* ========== helpers ========== */
+  function getCookie(n){return document.cookie.split('; ').find(r=>r.startsWith(n+'='))?.split('=')[1]||'';}
+  function setCookie(n,v,days=180){
+    const exp = new Date(Date.now()+days*864e5).toUTCString();
+    document.cookie=`${n}=${v}; expires=${exp}; path=/; domain=.fullyapprovedfinance.com; SameSite=Lax`;
+  }
+  function uuid(){return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));}
+
+  /* ========== 1. guarantee _fbc/_fbp cookies ========== */
+  (function(){
+    const qs = new URLSearchParams(location.search);
+    const fbclid = qs.get('fbclid');
+    if (!getCookie('_fbc') && fbclid){
+      const ts = Math.floor(Date.now()/1e3);
+      setCookie('_fbc', `fb.1.${ts}.${fbclid}`);
+    }
+    if (!getCookie('_fbp')){
+      const ts = Math.floor(Date.now()/1e3);
+      setCookie('_fbp', `fb.1.${ts}.${Math.floor(Math.random()*1e10)}`);
+    }
+  })();
+
+  /* ========== 2. stable external_id ========== */
+  if (!localStorage.getItem('fa_extid')){
+    localStorage.setItem('fa_extid', uuid());
+  }
+
+  /* ========== 3. hook the form ========== */
+  const leadForm = document.querySelector('form');
+  if (leadForm){
+    leadForm.addEventListener('submit', async e=>{
+      e.preventDefault();
+
+      // build payload -----------------------------------------------------------
+      const form       = e.target;
+      const data       = Object.fromEntries(new FormData(form)); // all existing fields
+      data._fbc        = getCookie('_fbc');
+      data._fbp        = getCookie('_fbp');
+      data.external_id = localStorage.getItem('fa_extid');
+      data.event_id    = `lead-${uuid()}`;                        // shared Pixel+CAPI
+      /* optional Facebook Login ID */
+      if (window.FB){
+        FB.getLoginStatus(res=>{
+          if (res.status==='connected'){
+            data.fb_login_id = res.authResponse.userID;
+          }
+          send(data);
+        });
+      }else{
+        send(data);
+      }
+
+      async function send(payload){
+        await fetch('https://<your-worker>.workers.dev', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        form.reset();
+      }
+    });
+  }
+  </script>
+
 </body>
 
 </html>
